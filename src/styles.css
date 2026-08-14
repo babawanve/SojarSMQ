@@ -1,1 +1,82 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+:root {
+  --primary-color: #0056b3;
+  --bg-color: #f4f6f9;
+  --text-main: #333;
+  --border-color: #ccc;
+  --sidebar-bg: #2c3e50;
+  --sidebar-text: #ecf0f1;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.btn-primary:hover {
+  background-color: #004494;
+}
+
+/* Split Screen Layouts (Auth) */
+.split-layout {
+  display: flex;
+  height: 100vh;
+}
+.split-form-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+.split-image-container {
+  flex: 1;
+  background: url('https://picsum.photos/1000/1000') no-repeat center center;
+  background-size: cover;
+}
+.split-40-60 .split-form-container { flex: 0.6; }
+.split-40-60 .split-image-container { flex: 0.4; }
+
+.auth-form {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  padding: 30px;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.form-group {
+  margin-bottom: 15px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+

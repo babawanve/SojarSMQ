@@ -1,0 +1,127 @@
+<div class="page-container">
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>User Management</h2>
+    <button class="btn-primary" (click)="openAddUserDialog()">
+      <i class="fa-solid fa-plus"></i> Add User
+    </button>
+  </div>
+
+  <div class="grid-container" style="background: white; padding: 20px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background: var(--bg-color); text-align: left;">
+          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);">Username</th>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);">Name</th>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);">Email</th>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);">Type</th>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td style="padding: 10px; border-bottom: 1px solid #eee;">{{user.UserName}}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;">{{user.FirstName}} {{user.LastName}}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;">{{user.Email}}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;">{{user.UserType}}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;">
+            <span [style.color]="user.IsActive ? 'green' : 'red'">{{user.IsActive ? 'Active' : 'Inactive'}}</span>
+          </td>
+        </tr>
+        <tr *ngIf="users.length === 0">
+          <td colspan="5" style="padding: 20px; text-align: center;">No users found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <dialog #addUserDialog class="add-user-modal" style="padding: 0; border: none; border-radius: 8px; width: 600px; max-width: 90vw; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+    <div style="background: var(--sidebar-bg); color: white; padding: 15px 20px; display: flex; justify-content: space-between;">
+      <h3 style="margin: 0;">Add New User</h3>
+      <button style="background: none; border: none; color: white; cursor: pointer;" (click)="closeAddUserDialog()"><i class="fa-solid fa-times"></i></button>
+    </div>
+    <div style="padding: 20px; max-height: 70vh; overflow-y: auto;">
+      <form class="complex-grid-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        
+        <div class="form-group text-box"><label>Username</label><input type="text"></div>
+        <div class="form-group text-box"><label>Email</label><input type="email"></div>
+        
+        <div class="form-group text-box"><label>First Name</label><input type="text"></div>
+        <div class="form-group text-box"><label>Last Name</label><input type="text"></div>
+        
+        <div class="form-group text-box"><label>Phone Number</label><input type="text"></div>
+        <div class="form-group text-box"><label>Employee ID</label><input type="text"></div>
+
+        <div class="form-group">
+          <label>User Type</label>
+          <select>
+            <option>Quality</option>
+            <option>Training</option>
+            <option>Document</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Designation</label>
+          <select>
+            <option>CEO</option>
+            <option>IT Head</option>
+            <option>IT Administrator</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Department</label>
+          <select>
+            <option>General</option>
+            <option>Information Technology</option>
+            <option>Human Resource</option>
+          </select>
+        </div>
+        <div class="form-group text-box"><label>Manager Username</label><input type="text"></div>
+
+        <div class="form-group">
+          <label>Time Zone</label>
+          <select>
+            <option>UTC-08:00 (Pacific Time)</option>
+            <option>UTC+00:00 (London)</option>
+            <option>UTC+05:30 (India)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Country</label>
+          <select>
+            <option>United States</option>
+            <option>United Kingdom</option>
+            <option>India</option>
+          </select>
+        </div>
+
+        <div class="form-group text-box"><label>City</label><input type="text"></div>
+        <div class="form-group">
+          <label>Primary Language</label>
+          <select>
+            <option>English</option>
+            <option>Marathi</option>
+            <option>Hindi</option>
+          </select>
+        </div>
+
+        <div class="form-group text-box"><label>Joining Date</label><input type="date"></div>
+        
+        <div class="form-group" style="display: flex; align-items: center; gap: 10px; grid-column: span 2;">
+          <input type="checkbox" id="isActive" checked> <label for="isActive" style="margin:0;">Is Active</label>
+          <input type="checkbox" id="isLocked" style="margin-left: 20px;"> <label for="isLocked" style="margin:0;">Is Locked</label>
+        </div>
+
+        <div class="form-group text-box" style="grid-column: span 2;">
+          <label>User Description</label>
+          <textarea rows="3"></textarea>
+        </div>
+
+      </form>
+    </div>
+    <div style="padding: 15px 20px; border-top: 1px solid var(--border-color); text-align: right; background: #f9f9f9;">
+      <button style="padding: 8px 15px; border: 1px solid var(--border-color); background: white; margin-right: 10px; cursor: pointer;" (click)="closeAddUserDialog()">Cancel</button>
+      <button class="btn-primary" (click)="closeAddUserDialog()">Save User</button>
+    </div>
+  </dialog>
+</div>

@@ -1,0 +1,43 @@
+<div class="page-container documents-page">
+  <div class="page-header">
+    <div>
+      <div class="breadcrumbs"><a routerLink="/dashboard/documents">Documents</a><span *ngFor="let crumb of breadcrumbs"> / <a [routerLink]="['/dashboard/documents/folder', crumb.id]">{{ crumb.name }}</a></span></div>
+      <h2>{{ currentFolder?.name || 'Folder' }}</h2>
+      <p>Browse folders and documents inside this folder.</p>
+    </div>
+    <div class="toolbar-actions">
+      <button class="btn-primary" (click)="openFolderDialog()"><i class="fa-solid fa-folder-plus"></i> Add Folder</button>
+      <button class="btn-secondary" (click)="openFileDialog()"><i class="fa-solid fa-file-circle-plus"></i> Add Document</button>
+      <button class="btn-secondary" (click)="goToParent()"><i class="fa-solid fa-arrow-up"></i> Up</button>
+      <button class="btn-secondary" (click)="refresh()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+    </div>
+  </div>
+
+  <div class="document-panel">
+    <div class="grid-toolbar"><label class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input type="search" [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" placeholder="Search this folder"></label><label class="page-size">Rows per page <select [(ngModel)]="pageSize" (ngModelChange)="onPageSizeChange()"><option [ngValue]="10">10</option><option [ngValue]="20">20</option><option [ngValue]="50">50</option><option [ngValue]="100">100</option></select></label></div>
+    <table class="document-grid">
+      <thead><tr><th>ID</th><th>Type</th><th>Name</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let document of visibleDocuments">
+          <td>{{ document.id }}</td><td><i *ngIf="document.type === 'Folder'" class="fa-solid fa-folder type-folder-icon"></i><i *ngIf="document.type === 'File'" class="fa-solid fa-file type-file-icon"></i> {{ document.type }}</td>
+          <td><a *ngIf="document.type === 'Folder'; else fileName" class="folder-link" [routerLink]="['/dashboard/documents/folder', document.id]">{{ document.name }}</a><ng-template #fileName>{{ document.name }}</ng-template></td>
+          <td><span class="status" [class]="document.status.toLowerCase()">{{ document.status }}</span></td>
+          <td class="row-actions"><button title="Edit" (click)="editDocument(document)"><i class="fa-solid fa-pen"></i></button><button title="Delete" (click)="deleteDocument(document.id)"><i class="fa-solid fa-trash"></i></button></td>
+        </tr>
+        <tr *ngIf="!visibleDocuments.length"><td class="empty-state" colspan="5">This folder is empty.</td></tr>
+      </tbody>
+    </table>
+    <div class="grid-footer"><span>Showing {{ firstRow }}-{{ lastRow }} of {{ filteredDocuments.length }} records</span><div class="pagination"><button (click)="previousPage()" [disabled]="currentPage === 1"><i class="fa-solid fa-chevron-left"></i></button><span>Page {{ currentPage }} of {{ pageCount }}</span><button (click)="nextPage()" [disabled]="currentPage === pageCount"><i class="fa-solid fa-chevron-right"></i></button></div></div>
+  </div>
+
+  <dialog #folderDialog class="folder-dialog">
+    <div class="dialog-header"><h3>{{ editingDocumentId ? 'Edit ' + recordType : 'Add ' + recordType }}</h3><button class="close-button" (click)="closeFolderDialog()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
+    <form class="folder-form" (submit)="$event.preventDefault(); saveFolder()">
+      <label>{{ recordType }} Name<input type="text" [(ngModel)]="folderName" name="folderName"></label><label>Code<input type="text" [(ngModel)]="folderCode" name="folderCode"></label>
+      <div class="form-field document-type-field"><span class="field-label">Document Types</span><button type="button" class="document-type-summary" (click)="toggleDocumentTypes()" [attr.aria-expanded]="documentTypeExpanded"><span>{{ documentTypeSummary() }}</span><i class="fa-solid" [ngClass]="documentTypeExpanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i></button><div class="document-type-list" *ngIf="documentTypeExpanded"><label class="document-type-option" *ngFor="let option of documentTypeOptions"><input type="checkbox" [checked]="documentTypes.includes(option)" (change)="toggleDocumentType(option)"><span>{{ option }}</span></label></div></div>
+      <label>Groups<select [(ngModel)]="group" name="group"><option *ngFor="let option of groupOptions" [ngValue]="option">{{ option }}</option></select></label>
+      <div class="toggle-field"><span>Override Document No. format at folder</span><mat-slide-toggle [(ngModel)]="overrideDocumentNumber" name="overrideDocumentNumber"></mat-slide-toggle></div><div class="toggle-field"><span>Allow To Input Document No. Manually?</span><mat-slide-toggle [(ngModel)]="manualDocumentNumber" name="manualDocumentNumber"></mat-slide-toggle></div><div class="toggle-field"><span>Allow To Input Version Manually?</span><mat-slide-toggle [(ngModel)]="manualVersion" name="manualVersion"></mat-slide-toggle></div><div class="toggle-field"><span>Cascade Privilege To Child Folders</span><mat-slide-toggle [(ngModel)]="cascadePrivilege" name="cascadePrivilege"></mat-slide-toggle></div>
+      <label class="full-width">Designation<textarea rows="3" [(ngModel)]="folderDesignation" name="folderDesignation"></textarea></label><div class="dialog-actions"><button type="button" class="btn-secondary" (click)="closeFolderDialog()">Cancel</button><button type="submit" class="btn-primary">{{ editingDocumentId ? 'Update' : 'Save' }}</button></div>
+    </form>
+  </dialog>
+</div>

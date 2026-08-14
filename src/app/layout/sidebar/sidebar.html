@@ -1,0 +1,85 @@
+<div class="sidebar" [class.collapsed]="isCollapsed">
+  <ul class="nav">
+    <li class="nav-item">
+      <a routerLink="/dashboard/home" routerLinkActive="active" [title]="isCollapsed ? 'Home' : ''">
+        <i class="fa-solid fa-home"></i> <span class="nav-text">Home</span>
+      </a>
+    </li>
+    
+    <!-- Quality -->
+    <li class="nav-item">
+      <div class="nav-header" (click)="toggle('quality')" [title]="isCollapsed ? 'Quality' : ''">
+        <i class="fa-solid fa-check-circle"></i> <span class="nav-text">Quality</span>
+        <i *ngIf="!isCollapsed" class="fa-solid toggle-icon" [ngClass]="isOpen('quality') ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+      </div>
+      <ul class="sub-nav" *ngIf="isOpen('quality')">
+        <li><a routerLink="/dashboard/quality/change-requests" routerLinkActive="active"><i class="fa-solid fa-code-branch"></i> Change Requests</a></li>
+        <li><a routerLink="/dashboard/quality/manage" routerLinkActive="active"><i class="fa-solid fa-sliders"></i> Manage</a></li>
+        <li><a routerLink="/dashboard/quality/reports" routerLinkActive="active"><i class="fa-solid fa-chart-column"></i> Reports</a></li>
+      </ul>
+    </li>
+
+    <!-- Documents -->
+    <li class="nav-item">
+      <a routerLink="/dashboard/documents" routerLinkActive="active" [title]="isCollapsed ? 'Documents' : ''">
+        <i class="fa-solid fa-file-alt"></i> <span class="nav-text">Documents</span>
+      </a>
+    </li>
+
+    <!-- Training -->
+    <li class="nav-item">
+      <div class="nav-header" (click)="toggle('training')" [title]="isCollapsed ? 'Training' : ''">
+        <i class="fa-solid fa-graduation-cap"></i> <span class="nav-text">Training</span>
+        <i *ngIf="!isCollapsed" class="fa-solid toggle-icon" [ngClass]="isOpen('training') ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+      </div>
+      <ul class="sub-nav" *ngIf="isOpen('training')">
+        <li><a routerLink="/dashboard/training/my-trainings" routerLinkActive="active"><i class="fa-solid fa-book-open-reader"></i> My Trainings</a></li>
+        <li><a routerLink="/dashboard/training/manage-trainings" routerLinkActive="active"><i class="fa-solid fa-list-check"></i> Manage Trainings</a></li>
+        <li><a routerLink="/dashboard/training/instructor-trainings" routerLinkActive="active"><i class="fa-solid fa-chalkboard-user"></i> Instructor Trainings</a></li>
+        <li>
+          <div class="nav-header sub-header" (click)="toggle('userTrainings')">
+            <i class="fa-solid fa-users"></i>
+            <span class="nav-text">User Trainings</span>
+            <i class="fa-solid toggle-icon" [ngClass]="isOpen('userTrainings') ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+          </div>
+          <ul class="sub-nav" *ngIf="isOpen('userTrainings')">
+            <li><a routerLink="/dashboard/training/user-trainings/manage" routerLinkActive="active"><i class="fa-solid fa-user-gear"></i> Manage</a></li>
+            <li><a routerLink="/dashboard/training/user-trainings/review" routerLinkActive="active"><i class="fa-solid fa-clipboard-check"></i> Review</a></li>
+          </ul>
+        </li>
+        <li><a routerLink="/dashboard/training/reports" routerLinkActive="active"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
+      </ul>
+    </li>
+
+    <!-- Admin -->
+    <li class="nav-item">
+      <div class="nav-header" (click)="toggle('admin')" [title]="isCollapsed ? 'Admin' : ''">
+        <i class="fa-solid fa-user-shield"></i> <span class="nav-text">Admin</span>
+        <i *ngIf="!isCollapsed" class="fa-solid toggle-icon" [ngClass]="isOpen('admin') ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+      </div>
+      <ul class="sub-nav" *ngIf="isOpen('admin')">
+        <li><a routerLink="/dashboard/admin/organization-configuration" routerLinkActive="active"><i class="fa-solid fa-building-gear"></i> Org Configuration</a></li>
+        <li><a routerLink="/dashboard/admin/user-management" routerLinkActive="active"><i class="fa-solid fa-user-group"></i> User Management</a></li>
+        <li><a routerLink="/dashboard/admin/reports" routerLinkActive="active"><i class="fa-solid fa-chart-pie"></i> Reports</a></li>
+      </ul>
+    </li>
+
+    <!-- Settings -->
+    <li class="nav-item">
+      <div class="nav-header" (click)="toggle('settings')" [title]="isCollapsed ? 'Settings' : ''">
+        <i class="fa-solid fa-cog"></i> <span class="nav-text">Settings</span>
+        <i *ngIf="!isCollapsed" class="fa-solid toggle-icon" [ngClass]="isOpen('settings') ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+      </div>
+      <ul class="sub-nav" *ngIf="isOpen('settings')">
+        <li><a routerLink="/dashboard/settings/system-codes" routerLinkActive="active"><i class="fa-solid fa-terminal"></i> System Codes</a></li>
+        <li><a routerLink="/dashboard/settings/schedules" routerLinkActive="active"><i class="fa-solid fa-calendar-days"></i> Schedules</a></li>
+      </ul>
+    </li>
+
+    <li class="nav-item" style="margin-top: auto; border-top: 1px solid #34495e;">
+      <a routerLink="/login" [title]="isCollapsed ? 'Logout' : ''">
+        <i class="fa-solid fa-sign-out-alt"></i> <span class="nav-text">Logout</span>
+      </a>
+    </li>
+  </ul>
+</div>
