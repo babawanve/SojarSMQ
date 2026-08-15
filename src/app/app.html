@@ -1,1 +1,12 @@
 <router-outlet></router-outlet>
+
+<div class="app-loading-overlay" *ngIf="loadingService.visible()" [class.closing]="loadingService.closing()" role="status" aria-live="polite" aria-label="Loading file contents">
+	<div class="app-loading-card">
+		<div class="loading-orbit" aria-hidden="true"><span></span><span></span><span></span></div>
+		<div class="loading-copy">
+			<strong>{{ loadingService.message() }}</strong>
+			<span>{{ loadingService.progress() }}%</span>
+		</div>
+		<div class="app-progress-track" aria-hidden="true"><div class="app-progress-value" [style.width.%]="loadingService.progress()"></div></div>
+	</div>
+</div>

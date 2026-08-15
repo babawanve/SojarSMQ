@@ -3,6 +3,7 @@ import { DocumentNode, DocumentNodeInput } from '../model/document-node.model';
 
 @Injectable({ providedIn: 'root' })
 export class DocumentService {
+  private readonly files = new Map<string, File>();
   private readonly nodes = signal<DocumentNode[]>([
     this.seed('DOC-1001', null, 'Incident Response Procedure', 'Folder', 'Published'),
     this.seed('DOC-1002', null, 'Leave and Attendance Policy', 'File', 'Published'),
@@ -20,6 +21,14 @@ export class DocumentService {
 
   findById(id: string): DocumentNode | undefined {
     return this.nodes().find(node => node.id === id);
+  }
+
+  getFile(documentId: string): File | undefined {
+    return this.files.get(documentId);
+  }
+
+  setFile(documentId: string, file: File): void {
+    this.files.set(documentId, file);
   }
 
   breadcrumbs(folderId: string | null): DocumentNode[] {
@@ -58,6 +67,7 @@ export class DocumentService {
       }
     }
     this.nodes.update(nodes => nodes.filter(node => !ids.has(node.id)));
+    ids.forEach(documentId => this.files.delete(documentId));
   }
 
   private nextId(): string {

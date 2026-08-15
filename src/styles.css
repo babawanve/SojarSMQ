@@ -24,6 +24,54 @@ body, html {
   box-sizing: border-box;
 }
 
+.app-loading-overlay {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 23, 42, .38);
+  backdrop-filter: blur(3px);
+  opacity: 1;
+  transition: opacity .26s ease, backdrop-filter .26s ease;
+  animation: loading-overlay-in .2s ease both;
+}
+
+.app-loading-overlay.closing {
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: blur(0);
+}
+
+.app-loading-card {
+  width: min(360px, calc(100vw - 32px));
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, .7);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 20px 55px rgba(15, 23, 42, .24);
+  transform: translateY(0) scale(1);
+  transition: transform .26s ease, opacity .26s ease;
+}
+
+.app-loading-overlay.closing .app-loading-card {
+  opacity: 0;
+  transform: translateY(-6px) scale(.98);
+}
+
+.loading-orbit { position: relative; width: 42px; height: 42px; margin: 0 auto 16px; }
+.loading-orbit span { position: absolute; inset: 8px; border: 3px solid var(--primary-color); border-top-color: transparent; border-radius: 50%; animation: loading-spin 1s linear infinite; }
+.loading-orbit span:nth-child(2) { inset: 3px; opacity: .35; animation-duration: 1.6s; animation-direction: reverse; }
+.loading-orbit span:nth-child(3) { inset: 14px; opacity: .7; animation-duration: .7s; }
+.loading-copy { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: #344054; }
+.loading-copy strong { font-size: 15px; }
+.loading-copy span { color: var(--primary-color); font-size: 13px; font-weight: 700; }
+.app-progress-track { height: 7px; margin-top: 14px; overflow: hidden; border-radius: 999px; background: #e5eaf0; }
+.app-progress-value { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #0056b3, #22a6b3); transition: width .25s ease; }
+
+@keyframes loading-spin { to { transform: rotate(360deg); } }
+@keyframes loading-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+
 .btn-primary {
   background-color: var(--primary-color);
   color: white;

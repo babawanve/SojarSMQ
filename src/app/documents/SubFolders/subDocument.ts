@@ -14,11 +14,9 @@ import { DocumentService } from '../../services/document.service';
 })
 export class SubDocument implements OnInit {
   @ViewChild('folderDialog') folderDialog!: ElementRef<HTMLDialogElement>;
-  readonly rootFolderId = null;
   folderId = '';
   currentFolder?: DocumentNode;
   editingDocumentId: string | null = null;
-  recordType: 'Folder' | 'File' = 'Folder';
   documentTypeExpanded = false;
   searchTerm = '';
   pageSize = 10;
@@ -73,8 +71,11 @@ export class SubDocument implements OnInit {
   documentTypeSummary() { return this.documentTypes.length ? this.documentTypes.join(', ') : 'Select document types'; }
 
   editDocument(document: DocumentNode) {
+    if (document.type === 'File') {
+      this.router.navigate(['/dashboard/documents/add', document.id]);
+      return;
+    }
     this.editingDocumentId = document.id;
-    this.recordType = document.type;
     this.folderName = document.name;
     this.folderCode = document.code;
     this.documentTypes = document.documentTypes;
@@ -93,12 +94,8 @@ export class SubDocument implements OnInit {
     if (this.currentPage > this.pageCount) this.currentPage = this.pageCount;
   }
 
-  openFolderDialog() { this.openRecordDialog('Folder'); }
-  openFileDialog() { this.openRecordDialog('File'); }
-
-  private openRecordDialog(type: 'Folder' | 'File') {
+  openFolderDialog() {
     this.editingDocumentId = null;
-    this.recordType = type;
     this.documentTypeExpanded = false;
     this.folderName = '';
     this.folderCode = '';
@@ -111,14 +108,15 @@ export class SubDocument implements OnInit {
     this.cascadePrivilege = false;
     this.folderDialog.nativeElement.showModal();
   }
+  openFileDialog() { this.router.navigate(['/dashboard/documents/add/folder', this.folderId]); }
 
   closeFolderDialog() { this.folderDialog.nativeElement.close(); }
 
   saveFolder() {
     const input: DocumentNodeInput = {
       parentId: this.folderId,
-      name: this.folderName || (this.recordType === 'Folder' ? 'Untitled Folder' : 'Untitled Document'),
-      type: this.recordType,
+      name: this.folderName || 'Untitled Folder',
+      type: 'Folder',
       status: 'Draft',
       code: this.folderCode,
       documentTypes: this.documentTypes,

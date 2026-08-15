@@ -1,0 +1,74 @@
+<main class="add-document-page">
+  <header class="workspace-toolbar">
+    <p class="preview-label">Preview</p>
+    <div class="toolbar-actions">
+      <button class="outline-button" type="button" (click)="save()">Save</button>
+      <button class="danger-button" type="button" *ngIf="isEditing" (click)="deleteDocument()">Delete</button>
+      <button class="outline-button" type="button" (click)="cancel()">Cancel</button>
+      <button class="icon-button" type="button" title="Communication" aria-label="Communication"><i class="fa-solid fa-comments"></i></button>
+      <button class="icon-button" type="button" title="Expand or collapse preview" aria-label="Expand or collapse preview" (click)="toggleExpanded()"><i class="fa-solid" [ngClass]="isExpanded ? 'fa-compress' : 'fa-expand'"></i></button>
+    </div>
+  </header>
+
+  <div class="workspace-grid" [class.collapsed]="!isExpanded">
+    <section class="preview-panel" aria-label="Document preview">
+      <div class="file-summary" *ngIf="selectedFile; else emptyFile">
+        <div><strong>Uploaded File Name:</strong><span>{{ selectedFile.name }}</span><small>{{ fileSizeLabel }}</small></div>
+        <div class="file-actions"><label class="outline-button upload-button">Upload Different File<input type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.xls,.xlsx,application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" (change)="onFileSelected($event)"></label><button class="text-button" type="button" (click)="downloadFile()">Download</button></div>
+      </div>
+      <ng-template #emptyFile>
+        <div class="empty-upload"><i class="fa-solid fa-file-arrow-up"></i><strong>No file selected</strong><span>Select a PDF, image, Word, or Excel file to preview it here.</span><label class="outline-button upload-button">Upload File<input type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.xls,.xlsx,application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" (change)="onFileSelected($event)"></label></div>
+      </ng-template>
+      <div class="preview-controls" *ngIf="selectedFile && filePreviewable">
+        <span>Zoom <strong>{{ previewZoomLabel }}</strong></span>
+        <div>
+          <button type="button" class="icon-button" title="Zoom out" aria-label="Zoom out" (click)="zoomOut()" [disabled]="previewZoom === 50"><i class="fa-solid fa-minus"></i></button>
+          <button type="button" class="icon-button" title="Reset zoom" aria-label="Reset zoom" (click)="resetZoom()"><i class="fa-solid fa-arrows-to-dot"></i></button>
+          <button type="button" class="icon-button" title="Zoom in" aria-label="Zoom in" (click)="zoomIn()" [disabled]="previewZoom === 200"><i class="fa-solid fa-plus"></i></button>
+        </div>
+      </div>
+      <div class="preview-frame" *ngIf="selectedFile && filePreviewable; else unsupportedPreview">
+        <img *ngIf="selectedFile.type.startsWith('image/')" [style.zoom]="previewZoomLabel" [src]="previewUrl" [alt]="selectedFile.name" (load)="previewReady()">
+        <iframe *ngIf="selectedFile.type === 'application/pdf'" [style.zoom]="previewZoomLabel" [src]="previewResourceUrl" [title]="selectedFile.name" (load)="previewReady()"></iframe>
+        <article *ngIf="previewType === 'docx'" class="office-preview" [style.zoom]="previewZoomLabel"><pre>{{ previewText }}</pre></article>
+        <div *ngIf="previewType === 'spreadsheet'" class="spreadsheet-preview" [style.zoom]="previewZoomLabel"><table><tbody><tr *ngFor="let row of spreadsheetRows"><td *ngFor="let cell of row">{{ cell }}</td></tr></tbody></table></div>
+      </div>
+      <ng-template #unsupportedPreview><div class="unsupported-preview" *ngIf="selectedFile"><i class="fa-solid fa-file"></i><span *ngIf="!previewError">Preview is not available for this file type. Legacy .doc files require conversion before their contents can be displayed in the browser.</span><span *ngIf="previewError">{{ previewError }}</span></div></ng-template>
+    </section>
+
+    <section class="metadata-panel" aria-label="Document metadata">
+      <nav class="tabs" role="tablist">
+        <button *ngFor="let tab of tabs" type="button" role="tab" [class.active]="activeTab === tab.id" [attr.aria-selected]="activeTab === tab.id" (click)="selectTab(tab.id)">{{ tab.label }}<span *ngIf="tab.required" class="required">*</span></button>
+      </nav>
+
+      <div class="tab-content" *ngIf="activeTab === 'details'">
+        <div class="form-grid">
+          <label>Document No.<input type="text" [(ngModel)]="documentNumber"></label>
+          <label>Version<input type="number" min="1" [(ngModel)]="version"></label>
+          <label>Document Name <span class="required">*</span><input type="text" [(ngModel)]="documentName" [class.invalid]="saveAttempted && !documentName.trim()"></label>
+          <label>Document Type <span class="required">*</span><select [(ngModel)]="documentType" [class.invalid]="saveAttempted && !documentType"><option value="">Select</option><option *ngFor="let option of documentTypeOptions" [value]="option">{{ option }}</option></select></label>
+          <label>Effective From Date<input type="date" [(ngModel)]="effectiveFrom"></label>
+          <label>Expiration Date<input type="date" [(ngModel)]="expirationDate"></label>
+          <label class="full-width">Document Description <span class="required">*</span><textarea rows="5" [(ngModel)]="description" [class.invalid]="saveAttempted && !description.trim()"></textarea></label>
+          <label>CR<input type="text" [(ngModel)]="changeRequest" placeholder="CR"></label>
+          <label>Group<select [(ngModel)]="group"><option *ngFor="let option of groupOptions" [value]="option">{{ option }}</option></select></label>
+        </div>
+      </div>
+
+      <div class="tab-content" *ngIf="activeTab === 'revision'">
+        <div class="form-grid single-column">
+          <label>Revision Summary <span class="required">*</span><textarea rows="5" [(ngModel)]="revisionSummary" [class.invalid]="saveAttempted && !revisionSummary.trim()"></textarea></label>
+          <label>Revision Date <span class="required">*</span><input type="date" [(ngModel)]="revisionDate" [class.invalid]="saveAttempted && !revisionDate"></label>
+          <p class="helper-text">Revision history will be connected to document persistence when the backend contract is available.</p>
+        </div>
+      </div>
+
+      <div class="tab-content" *ngIf="activeTab === 'tags'">
+        <label class="tag-entry">Tags<input type="text" [(ngModel)]="tagInput" (keyup.enter)="addTag()" placeholder="Type a tag and press Enter"></label>
+        <div class="tag-list"><span class="tag" *ngFor="let tag of tags">{{ tag }}<button type="button" (click)="removeTag(tag)" [attr.aria-label]="'Remove ' + tag"><i class="fa-solid fa-xmark"></i></button></span></div>
+      </div>
+
+      <p class="error-message" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
+    </section>
+  </div>
+</main>

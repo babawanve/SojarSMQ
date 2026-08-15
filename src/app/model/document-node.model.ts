@@ -15,6 +15,13 @@ export interface DocumentNode {
   manualDocumentNumber: boolean;
   manualVersion: boolean;
   cascadePrivilege: boolean;
+  version?: number;
+  effectiveFrom?: string;
+  expirationDate?: string;
+  changeRequest?: string;
+  revisionSummary?: string;
+  revisionDate?: string;
+  tags?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -32,4 +39,11 @@ export interface DocumentNodeInput {
   manualDocumentNumber: boolean;
   manualVersion: boolean;
   cascadePrivilege: boolean;
+  version?: number;
+  effectiveFrom?: string;
+  expirationDate?: string;
+  changeRequest?: string;
+  revisionSummary?: string;
+  revisionDate?: string;
+  tags?: string[];
 }

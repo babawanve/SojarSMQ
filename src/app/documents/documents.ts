@@ -1,41 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { RouterModule } from '@angular/router';
-import { DocumentNode, DocumentNodeInput } from '../model/document-node.model';
+import { Router, RouterModule } from '@angular/router';
+import { DocumentNode } from '../model/document-node.model';
 import { DocumentService } from '../services/document.service';
 
 @Component({
   selector: 'app-documents',
-  imports: [CommonModule, FormsModule, MatSlideToggleModule, RouterModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './documents.html',
   styleUrl: './documents.css',
 })
 export class Documents {
-  @ViewChild('folderDialog') folderDialog!: ElementRef<HTMLDialogElement>;
   readonly rootFolderId = null;
-  editingDocumentId: string | null = null;
-  recordType: 'Folder' | 'File' = 'Folder';
-  documentTypeExpanded = false;
 
   searchTerm = '';
   pageSize = 10;
   currentPage = 1;
-  folderName = '';
-  folderCode = '';
-  documentTypes: string[] = [];
-  folderDesignation = '';
-  group = 'General';
-  overrideDocumentNumber = false;
-  manualDocumentNumber = false;
-  manualVersion = false;
-  cascadePrivilege = false;
-
-  readonly documentTypeOptions = ['Annexure', 'Forms', 'HR Policy', 'IT Policy', 'IT SOP', 'User Manual'];
-  readonly groupOptions = ['Belongs to Individual documents', 'Client specific documents', 'General'];
-
-  constructor(private readonly documentService: DocumentService) {}
+  constructor(
+    private readonly documentService: DocumentService,
+    private readonly router: Router
+  ) {}
 
   get documents() {
     return this.documentService.listChildren(this.rootFolderId);
@@ -74,20 +60,6 @@ export class Documents {
     this.currentPage = 1;
   }
 
-  toggleDocumentTypes() {
-    this.documentTypeExpanded = !this.documentTypeExpanded;
-  }
-
-  toggleDocumentType(documentType: string) {
-    this.documentTypes = this.documentTypes.includes(documentType)
-      ? this.documentTypes.filter(type => type !== documentType)
-      : [...this.documentTypes, documentType];
-  }
-
-  documentTypeSummary() {
-    return this.documentTypes.length ? this.documentTypes.join(', ') : 'Select document types';
-  }
-
   previousPage() {
     this.currentPage = Math.max(1, this.currentPage - 1);
   }
@@ -97,18 +69,11 @@ export class Documents {
   }
 
   editDocument(document: DocumentNode) {
-    this.editingDocumentId = document.id;
-    this.documentTypeExpanded = false;
-    this.folderName = document.name;
-    this.folderCode = document.id;
-    this.documentTypes = [document.type];
-    this.folderDesignation = document.designation;
-    this.group = 'General';
-    this.overrideDocumentNumber = false;
-    this.manualDocumentNumber = false;
-    this.manualVersion = false;
-    this.cascadePrivilege = false;
-    this.folderDialog.nativeElement.showModal();
+    if (document.type === 'File') {
+      this.router.navigate(['/dashboard/documents/add', document.id]);
+      return;
+    }
+    this.router.navigate(['/dashboard/documents/add-folder', document.id]);
   }
 
   deleteDocument(documentId: string) {
@@ -123,55 +88,4 @@ export class Documents {
     this.currentPage = 1;
   }
 
-  openFolderDialog() {
-    this.editingDocumentId = null;
-    this.recordType = 'Folder';
-    this.documentTypeExpanded = false;
-    this.folderName = '';
-    this.folderCode = '';
-    this.documentTypes = [];
-    this.folderDesignation = '';
-    this.group = 'General';
-    this.overrideDocumentNumber = false;
-    this.manualDocumentNumber = false;
-    this.manualVersion = false;
-    this.cascadePrivilege = false;
-    this.folderDialog.nativeElement.showModal();
-  }
-
-  openFileDialog() {
-    this.editingDocumentId = null;
-    this.recordType = 'File';
-    this.documentTypeExpanded = false;
-    this.folderName = '';
-    this.folderCode = '';
-    this.documentTypes = [];
-    this.folderDesignation = '';
-    this.group = 'General';
-    this.folderDialog.nativeElement.showModal();
-  }
-
-  closeFolderDialog() {
-    this.folderDialog.nativeElement.close();
-  }
-
-  saveFolder() {
-    const input: DocumentNodeInput = {
-      parentId: this.rootFolderId,
-      name: this.folderName || 'Untitled Folder',
-      type: this.recordType,
-      status: 'Draft',
-      code: this.folderCode,
-      documentTypes: this.documentTypes,
-      designation: this.folderDesignation,
-      group: this.group,
-      overrideDocumentNumber: this.overrideDocumentNumber,
-      manualDocumentNumber: this.manualDocumentNumber,
-      manualVersion: this.manualVersion,
-      cascadePrivilege: this.cascadePrivilege
-    };
-    if (this.editingDocumentId) this.documentService.update(this.editingDocumentId, input);
-    else this.documentService.create(input);
-    this.closeFolderDialog();
-  }
 }
