@@ -59,18 +59,18 @@ export class AddFolder {
 
   save() {
     const input: DocumentNodeInput = {
-      parentId: this.parentId,
-      name: this.folderName || 'Untitled Folder',
-      type: 'Folder',
-      status: 'Draft',
-      code: this.folderCode,
-      documentTypes: this.documentTypes,
-      designation: this.folderDesignation,
-      group: this.group,
-      overrideDocumentNumber: this.overrideDocumentNumber,
-      manualDocumentNumber: this.manualDocumentNumber,
-      manualVersion: this.manualVersion,
-      cascadePrivilege: this.cascadePrivilege
+      ParentId: this.parentId,
+      Name: this.folderName || 'Untitled Folder',
+      Type: 'Folder',
+      Status: 'Draft',
+      Code: this.folderCode,
+      DocumentTypes: this.documentTypes,
+      Designation: this.folderDesignation,
+      Group: this.group,
+      OverrideDocumentNumber: this.overrideDocumentNumber,
+      ManualDocumentNumber: this.manualDocumentNumber,
+      ManualVersion: this.manualVersion,
+      CascadePrivilege: this.cascadePrivilege
     };
 
     if (this.editingDocumentId) this.documentService.update(this.editingDocumentId, input);
@@ -84,21 +84,21 @@ export class AddFolder {
 
   private loadDocument(documentId: string) {
     const document = this.documentService.findById(documentId);
-    if (!document || document.type !== 'Folder') {
+    if (!document || document.Type !== 'Folder') {
       this.goBack();
       return;
     }
-    this.editingDocumentId = document.id;
-    this.parentId = document.parentId;
-    this.folderName = document.name;
-    this.folderCode = document.code;
-    this.documentTypes = [...document.documentTypes];
-    this.folderDesignation = document.designation;
-    this.group = document.group;
-    this.overrideDocumentNumber = document.overrideDocumentNumber;
-    this.manualDocumentNumber = document.manualDocumentNumber;
-    this.manualVersion = document.manualVersion;
-    this.cascadePrivilege = document.cascadePrivilege;
+    this.editingDocumentId = document.Id;
+    this.parentId = document.ParentId;
+    this.folderName = document.Name;
+    this.folderCode = document.Code;
+    this.documentTypes = [...document.DocumentTypes];
+    this.folderDesignation = document.Designation;
+    this.group = document.Group;
+    this.overrideDocumentNumber = document.OverrideDocumentNumber;
+    this.manualDocumentNumber = document.ManualDocumentNumber;
+    this.manualVersion = document.ManualVersion;
+    this.cascadePrivilege = document.CascadePrivilege;
   }
 
   private goBack() {

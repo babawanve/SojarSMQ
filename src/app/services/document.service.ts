@@ -16,11 +16,11 @@ export class DocumentService {
   ]);
 
   listChildren(parentId: string | null): DocumentNode[] {
-    return this.nodes().filter(node => node.parentId === parentId);
+    return this.nodes().filter(node => node.ParentId === parentId);
   }
 
   findById(id: string): DocumentNode | undefined {
-    return this.nodes().find(node => node.id === id);
+    return this.nodes().find(node => node.Id === id);
   }
 
   getFile(documentId: string): File | undefined {
@@ -36,21 +36,21 @@ export class DocumentService {
     let current = folderId ? this.findById(folderId) : undefined;
     while (current) {
       path.unshift(current);
-      current = current.parentId ? this.findById(current.parentId) : undefined;
+      current = current.ParentId ? this.findById(current.ParentId) : undefined;
     }
     return path;
   }
 
   create(input: DocumentNodeInput): DocumentNode {
     const now = new Date().toISOString();
-    const node: DocumentNode = { ...input, id: this.nextId(), createdAt: now, updatedAt: now };
+    const node: DocumentNode = { ...input, Id: this.nextId(), CreatedAt: now, UpdatedAt: now };
     this.nodes.update(nodes => [...nodes, node]);
     return node;
   }
 
   update(id: string, input: DocumentNodeInput): void {
-    this.nodes.update(nodes => nodes.map(node => node.id === id
-      ? { ...node, ...input, id: node.id, createdAt: node.createdAt, updatedAt: new Date().toISOString() }
+    this.nodes.update(nodes => nodes.map(node => node.Id === id
+      ? { ...node, ...input, Id: node.Id, CreatedAt: node.CreatedAt, UpdatedAt: new Date().toISOString() }
       : node));
   }
 
@@ -60,27 +60,27 @@ export class DocumentService {
     while (changed) {
       changed = false;
       for (const node of this.nodes()) {
-        if (node.parentId && ids.has(node.parentId) && !ids.has(node.id)) {
-          ids.add(node.id);
+        if (node.ParentId && ids.has(node.ParentId) && !ids.has(node.Id)) {
+          ids.add(node.Id);
           changed = true;
         }
       }
     }
-    this.nodes.update(nodes => nodes.filter(node => !ids.has(node.id)));
+    this.nodes.update(nodes => nodes.filter(node => !ids.has(node.Id)));
     ids.forEach(documentId => this.files.delete(documentId));
   }
 
   private nextId(): string {
-    const numericIds = this.nodes().map(node => Number(node.id.replace('DOC-', ''))).filter(Number.isFinite);
+    const numericIds = this.nodes().map(node => Number(node.Id.replace('DOC-', ''))).filter(Number.isFinite);
     return `DOC-${Math.max(...numericIds, 1000) + 1}`;
   }
 
-  private seed(id: string, parentId: string | null, name: string, type: DocumentNode['type'], status: DocumentNode['status']): DocumentNode {
+  private seed(id: string, parentId: string | null, name: string, type: DocumentNode['Type'], status: DocumentNode['Status']): DocumentNode {
     const now = new Date().toISOString();
     return {
-      id, parentId, name, type, status, code: id, documentTypes: [], designation: name, group: 'General',
-      overrideDocumentNumber: false, manualDocumentNumber: false, manualVersion: false, cascadePrivilege: false,
-      createdAt: now, updatedAt: now
+      Id: id, ParentId: parentId, Name: name, Type: type, Status: status, Code: id, DocumentTypes: [], Designation: name, Group: 'General',
+      OverrideDocumentNumber: false, ManualDocumentNumber: false, ManualVersion: false, CascadePrivilege: false,
+      CreatedAt: now, UpdatedAt: now
     };
   }
 }

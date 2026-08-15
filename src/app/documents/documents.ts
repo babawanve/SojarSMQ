@@ -5,6 +5,9 @@ import { Router, RouterModule } from '@angular/router';
 import { DocumentNode } from '../model/document-node.model';
 import { DocumentService } from '../services/document.service';
 
+type DocumentSortColumn = 'Id' | 'Type' | 'Name' | 'Status';
+type SortDirection = 'asc' | 'desc' | null;
+
 @Component({
   selector: 'app-documents',
   standalone: true,
@@ -18,6 +21,8 @@ export class Documents {
   searchTerm = '';
   pageSize = 10;
   currentPage = 1;
+  sortColumn: DocumentSortColumn | null = null;
+  sortDirection: SortDirection = null;
   constructor(
     private readonly documentService: DocumentService,
     private readonly router: Router
@@ -29,10 +34,40 @@ export class Documents {
 
   get filteredDocuments() {
     const term = this.searchTerm.trim().toLowerCase();
-    return term
-      ? this.documents.filter(document => [document.id, document.type, document.name, document.status]
+    const filtered = term
+      ? this.documents.filter(document => [document.Id, document.Type, document.Name, document.Status]
         .some(value => value.toLowerCase().includes(term)))
       : this.documents;
+    return this.sortDocuments(filtered);
+  }
+
+  sortBy(column: DocumentSortColumn) {
+    if (this.sortColumn !== column) {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    } else if (this.sortDirection === 'asc') {
+      this.sortDirection = 'desc';
+    } else {
+      this.sortColumn = null;
+      this.sortDirection = null;
+    }
+    this.currentPage = 1;
+  }
+
+  sortIcon(column: DocumentSortColumn) {
+    return this.sortColumn !== column || !this.sortDirection
+      ? 'fa-sort'
+      : this.sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down';
+  }
+
+  private sortDocuments(documents: DocumentNode[]) {
+    if (!this.sortColumn || !this.sortDirection) return documents;
+    return [...documents].sort((left, right) => {
+      const leftValue = String(left[this.sortColumn!]).toLowerCase();
+      const rightValue = String(right[this.sortColumn!]).toLowerCase();
+      const result = leftValue.localeCompare(rightValue, undefined, { numeric: true });
+      return this.sortDirection === 'asc' ? result : -result;
+    });
   }
 
   get pageCount() {
@@ -69,11 +104,11 @@ export class Documents {
   }
 
   editDocument(document: DocumentNode) {
-    if (document.type === 'File') {
-      this.router.navigate(['/dashboard/documents/add', document.id]);
+    if (document.Type === 'File') {
+      this.router.navigate(['/dashboard/documents/add', document.Id]);
       return;
     }
-    this.router.navigate(['/dashboard/documents/add-folder', document.id]);
+    this.router.navigate(['/dashboard/documents/add-folder', document.Id]);
   }
 
   deleteDocument(documentId: string) {

@@ -6,6 +6,9 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DocumentNode, DocumentNodeInput } from '../../model/document-node.model';
 import { DocumentService } from '../../services/document.service';
 
+type DocumentSortColumn = 'Id' | 'Type' | 'Name' | 'Status';
+type SortDirection = 'asc' | 'desc' | null;
+
 @Component({
   selector: 'app-sub-document',
   imports: [CommonModule, FormsModule, MatSlideToggleModule, RouterModule],
@@ -21,6 +24,8 @@ export class SubDocument implements OnInit {
   searchTerm = '';
   pageSize = 10;
   currentPage = 1;
+  sortColumn: DocumentSortColumn | null = null;
+  sortDirection: SortDirection = null;
   folderName = '';
   folderCode = '';
   documentTypes: string[] = [];
@@ -53,9 +58,18 @@ export class SubDocument implements OnInit {
   get breadcrumbs() { return this.documentService.breadcrumbs(this.folderId); }
   get filteredDocuments() {
     const term = this.searchTerm.trim().toLowerCase();
-    return term ? this.documents.filter(document => [document.id, document.type, document.name, document.status]
+    const filtered = term ? this.documents.filter(document => [document.Id, document.Type, document.Name, document.Status]
       .some(value => value.toLowerCase().includes(term))) : this.documents;
+    if (!this.sortColumn || !this.sortDirection) return filtered;
+    return [...filtered].sort((left, right) => {
+      const leftValue = String(left[this.sortColumn!]).toLowerCase();
+      const rightValue = String(right[this.sortColumn!]).toLowerCase();
+      const result = leftValue.localeCompare(rightValue, undefined, { numeric: true });
+      return this.sortDirection === 'asc' ? result : -result;
+    });
   }
+  sortBy(column: DocumentSortColumn) { if (this.sortColumn !== column) { this.sortColumn = column; this.sortDirection = 'asc'; } else if (this.sortDirection === 'asc') this.sortDirection = 'desc'; else { this.sortColumn = null; this.sortDirection = null; } this.currentPage = 1; }
+  sortIcon(column: DocumentSortColumn) { return this.sortColumn !== column || !this.sortDirection ? 'fa-sort' : this.sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down'; }
   get pageCount() { return Math.max(1, Math.ceil(this.filteredDocuments.length / this.pageSize)); }
   get visibleDocuments() { const start = (this.currentPage - 1) * this.pageSize; return this.filteredDocuments.slice(start, start + this.pageSize); }
   get firstRow() { return this.filteredDocuments.length ? (this.currentPage - 1) * this.pageSize + 1 : 0; }
@@ -71,20 +85,20 @@ export class SubDocument implements OnInit {
   documentTypeSummary() { return this.documentTypes.length ? this.documentTypes.join(', ') : 'Select document types'; }
 
   editDocument(document: DocumentNode) {
-    if (document.type === 'File') {
-      this.router.navigate(['/dashboard/documents/add', document.id]);
+    if (document.Type === 'File') {
+      this.router.navigate(['/dashboard/documents/add', document.Id]);
       return;
     }
-    this.editingDocumentId = document.id;
-    this.folderName = document.name;
-    this.folderCode = document.code;
-    this.documentTypes = document.documentTypes;
-    this.folderDesignation = document.designation;
-    this.group = document.group;
-    this.overrideDocumentNumber = document.overrideDocumentNumber;
-    this.manualDocumentNumber = document.manualDocumentNumber;
-    this.manualVersion = document.manualVersion;
-    this.cascadePrivilege = document.cascadePrivilege;
+    this.editingDocumentId = document.Id;
+    this.folderName = document.Name;
+    this.folderCode = document.Code;
+    this.documentTypes = document.DocumentTypes;
+    this.folderDesignation = document.Designation;
+    this.group = document.Group;
+    this.overrideDocumentNumber = document.OverrideDocumentNumber;
+    this.manualDocumentNumber = document.ManualDocumentNumber;
+    this.manualVersion = document.ManualVersion;
+    this.cascadePrivilege = document.CascadePrivilege;
     this.documentTypeExpanded = false;
     this.folderDialog.nativeElement.showModal();
   }
@@ -114,18 +128,18 @@ export class SubDocument implements OnInit {
 
   saveFolder() {
     const input: DocumentNodeInput = {
-      parentId: this.folderId,
-      name: this.folderName || 'Untitled Folder',
-      type: 'Folder',
-      status: 'Draft',
-      code: this.folderCode,
-      documentTypes: this.documentTypes,
-      designation: this.folderDesignation,
-      group: this.group,
-      overrideDocumentNumber: this.overrideDocumentNumber,
-      manualDocumentNumber: this.manualDocumentNumber,
-      manualVersion: this.manualVersion,
-      cascadePrivilege: this.cascadePrivilege
+      ParentId: this.folderId,
+      Name: this.folderName || 'Untitled Folder',
+      Type: 'Folder',
+      Status: 'Draft',
+      Code: this.folderCode,
+      DocumentTypes: this.documentTypes,
+      Designation: this.folderDesignation,
+      Group: this.group,
+      OverrideDocumentNumber: this.overrideDocumentNumber,
+      ManualDocumentNumber: this.manualDocumentNumber,
+      ManualVersion: this.manualVersion,
+      CascadePrivilege: this.cascadePrivilege
     };
     if (this.editingDocumentId) this.documentService.update(this.editingDocumentId, input);
     else this.documentService.create(input);
@@ -133,5 +147,5 @@ export class SubDocument implements OnInit {
   }
 
   goToRoot() { this.router.navigate(['/dashboard/documents']); }
-  goToParent() { this.currentFolder?.parentId ? this.router.navigate(['/dashboard/documents/folder', this.currentFolder.parentId]) : this.goToRoot(); }
+  goToParent() { this.currentFolder?.ParentId ? this.router.navigate(['/dashboard/documents/folder', this.currentFolder.ParentId]) : this.goToRoot(); }
 }

@@ -18,14 +18,14 @@
     </div>
 
     <table class="document-grid">
-      <thead><tr><th>ID</th><th>Type</th><th>Folder Name</th><th>Status</th><th>Actions</th></tr></thead>
+      <thead><tr><th><button class="sortable-header" type="button" (click)="sortBy('Id')">ID <i class="fa-solid" [ngClass]="sortIcon('Id')"></i></button></th><th><button class="sortable-header" type="button" (click)="sortBy('Type')">Type <i class="fa-solid" [ngClass]="sortIcon('Type')"></i></button></th><th><button class="sortable-header" type="button" (click)="sortBy('Name')">Folder Name <i class="fa-solid" [ngClass]="sortIcon('Name')"></i></button></th><th><button class="sortable-header" type="button" (click)="sortBy('Status')">Status <i class="fa-solid" [ngClass]="sortIcon('Status')"></i></button></th><th>Actions</th></tr></thead>
       <tbody>
         <tr *ngFor="let document of visibleDocuments">
-          <td>{{ document.id }}</td>
-          <td><i *ngIf="document.type === 'Folder'" class="fa-solid fa-folder type-folder-icon" aria-label="Folder"></i><i *ngIf="document.type === 'File'" class="fa-solid fa-file type-file-icon" aria-label="File"></i> {{ document.type }}</td>
-          <td><a *ngIf="document.type === 'Folder'; else fileName" class="folder-link" [routerLink]="['/dashboard/documents/folder', document.id]">{{ document.name }}</a><ng-template #fileName>{{ document.name }}</ng-template></td>
-          <td><span class="status" [class]="document.status.toLowerCase()">{{ document.status }}</span></td>
-          <td class="row-actions"><button title="Edit" (click)="editDocument(document)"><i class="fa-solid fa-pen"></i></button><button title="Delete" (click)="deleteDocument(document.id)"><i class="fa-solid fa-trash"></i></button></td>
+          <td>{{ document.Id }}</td>
+          <td><i *ngIf="document.Type === 'Folder'" class="fa-solid fa-folder type-folder-icon" aria-label="Folder"></i><i *ngIf="document.Type === 'File'" class="fa-solid fa-file type-file-icon" aria-label="File"></i> {{ document.Type }}</td>
+          <td><a *ngIf="document.Type === 'Folder'; else fileName" class="folder-link" [routerLink]="['/dashboard/documents/folder', document.Id]">{{ document.Name }}</a><ng-template #fileName>{{ document.Name }}</ng-template></td>
+          <td><span class="status" [class]="document.Status.toLowerCase()">{{ document.Status }}</span></td>
+          <td class="row-actions"><button title="Edit" (click)="editDocument(document)"><i class="fa-solid fa-pen"></i></button><button title="Delete" (click)="deleteDocument(document.Id)"><i class="fa-solid fa-trash"></i></button></td>
         </tr>
         <tr *ngIf="!visibleDocuments.length"><td class="empty-state" colspan="5">No documents match your search.</td></tr>
       </tbody>

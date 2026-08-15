@@ -10,15 +10,15 @@
     <table style="width: 100%; border-collapse: collapse;">
       <thead>
         <tr style="background: var(--bg-color); text-align: left;">
-          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);">Username</th>
-          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);">Name</th>
-          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);">Email</th>
-          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);">Type</th>
-          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);">Status</th>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);"><button class="sortable-header" type="button" (click)="sortBy('UserName')">Username <i class="fa-solid" [ngClass]="sortIcon('UserName')"></i></button></th>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);"><button class="sortable-header" type="button" (click)="sortBy('FirstName')">Name <i class="fa-solid" [ngClass]="sortIcon('FirstName')"></i></button></th>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);"><button class="sortable-header" type="button" (click)="sortBy('Email')">Email <i class="fa-solid" [ngClass]="sortIcon('Email')"></i></button></th>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);"><button class="sortable-header" type="button" (click)="sortBy('UserType')">Type <i class="fa-solid" [ngClass]="sortIcon('UserType')"></i></button></th>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border-color);"><button class="sortable-header" type="button" (click)="sortBy('IsActive')">Status <i class="fa-solid" [ngClass]="sortIcon('IsActive')"></i></button></th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of users">
+        <tr *ngFor="let user of sortedUsers">
           <td style="padding: 10px; border-bottom: 1px solid #eee;">{{user.UserName}}</td>
           <td style="padding: 10px; border-bottom: 1px solid #eee;">{{user.FirstName}} {{user.LastName}}</td>
           <td style="padding: 10px; border-bottom: 1px solid #eee;">{{user.Email}}</td>

@@ -14,6 +14,8 @@
 .document-grid { width: 100%; border-collapse: collapse; }
 .document-grid th, .document-grid td { padding: 13px 12px; border-bottom: 1px solid #e7eaee; text-align: left; }
 .document-grid th { background: #f4f6f9; color: #344054; font-size: 13px; text-transform: uppercase; }
+.sortable-header { display: inline-flex; align-items: center; gap: 8px; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; font: inherit; font-weight: inherit; text-transform: inherit; }
+.sortable-header:hover, .sortable-header:focus-visible { color: var(--primary-color); outline: none; }
 .document-grid td { color: #475467; }
 .type-folder-icon { color: #d99a23; margin-right: 5px; }
 .type-file-icon { color: #55708f; margin-right: 5px; }

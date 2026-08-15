@@ -1,0 +1,2 @@
+.sortable-header { display: inline-flex; align-items: center; gap: 8px; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; font: inherit; font-weight: 600; }
+.sortable-header:hover, .sortable-header:focus-visible { color: var(--primary-color); outline: none; }

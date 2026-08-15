@@ -165,25 +165,25 @@ export class AddDocument implements OnDestroy {
     }
 
     const input: DocumentNodeInput = {
-      parentId: this.parentId,
-      name: this.documentName.trim(),
-      type: 'File' as const,
-      status: 'Draft' as const,
-      code: this.documentNumber.trim(),
-      documentTypes: [this.documentType],
-      designation: this.description.trim(),
-      group: this.group,
-      overrideDocumentNumber: false,
-      manualDocumentNumber: false,
-      manualVersion: false,
-      cascadePrivilege: false,
-      version: this.version,
-      effectiveFrom: this.effectiveFrom,
-      expirationDate: this.expirationDate,
-      changeRequest: this.changeRequest,
-      revisionSummary: this.revisionSummary,
-      revisionDate: this.revisionDate,
-      tags: [...this.tags]
+      ParentId: this.parentId,
+      Name: this.documentName.trim(),
+      Type: 'File' as const,
+      Status: 'Draft' as const,
+      Code: this.documentNumber.trim(),
+      DocumentTypes: [this.documentType],
+      Designation: this.description.trim(),
+      Group: this.group,
+      OverrideDocumentNumber: false,
+      ManualDocumentNumber: false,
+      ManualVersion: false,
+      CascadePrivilege: false,
+      Version: this.version,
+      EffectiveFrom: this.effectiveFrom,
+      ExpirationDate: this.expirationDate,
+      ChangeRequest: this.changeRequest,
+      RevisionSummary: this.revisionSummary,
+      RevisionDate: this.revisionDate,
+      Tags: [...this.tags]
     };
 
     if (this.editingDocumentId) {
@@ -191,7 +191,7 @@ export class AddDocument implements OnDestroy {
       if (this.selectedFile) this.documentService.setFile(this.editingDocumentId, this.selectedFile);
     } else {
       const createdDocument = this.documentService.create(input);
-      if (this.selectedFile) this.documentService.setFile(createdDocument.id, this.selectedFile);
+      if (this.selectedFile) this.documentService.setFile(createdDocument.Id, this.selectedFile);
     }
     this.returnToDocumentList();
   }
@@ -211,25 +211,25 @@ export class AddDocument implements OnDestroy {
 
   private loadDocument(documentId: string) {
     const document = this.documentService.findById(documentId);
-    if (!document || document.type !== 'File') {
+    if (!document || document.Type !== 'File') {
       this.router.navigate(['/dashboard/documents']);
       return;
     }
-    this.editingDocumentId = document.id;
-    this.parentId = document.parentId;
-    this.documentNumber = document.code;
-    this.documentName = document.name;
-    this.documentType = document.documentTypes[0] ?? '';
-    this.description = document.designation;
-    this.group = document.group;
-    this.version = document.version ?? 1;
-    this.effectiveFrom = document.effectiveFrom ?? '';
-    this.expirationDate = document.expirationDate ?? '';
-    this.changeRequest = document.changeRequest ?? '';
-    this.revisionSummary = document.revisionSummary ?? '';
-    this.revisionDate = document.revisionDate ?? '';
-    this.tags = [...(document.tags ?? [])];
-    const storedFile = this.documentService.getFile(document.id);
+    this.editingDocumentId = document.Id;
+    this.parentId = document.ParentId;
+    this.documentNumber = document.Code;
+    this.documentName = document.Name;
+    this.documentType = document.DocumentTypes[0] ?? '';
+    this.description = document.Designation;
+    this.group = document.Group;
+    this.version = document.Version ?? 1;
+    this.effectiveFrom = document.EffectiveFrom ?? '';
+    this.expirationDate = document.ExpirationDate ?? '';
+    this.changeRequest = document.ChangeRequest ?? '';
+    this.revisionSummary = document.RevisionSummary ?? '';
+    this.revisionDate = document.RevisionDate ?? '';
+    this.tags = [...(document.Tags ?? [])];
+    const storedFile = this.documentService.getFile(document.Id);
     if (storedFile) {
       this.setSelectedFile(storedFile);
       void this.preparePreview(storedFile);
