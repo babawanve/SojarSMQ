@@ -58,6 +58,7 @@ The Documents feature must behave like a Windows File Explorer-style hierarchy.
 - Keep file preview content in component-local state; do not place raw `File`, Blob, object URLs, or parser output into the domain model.
 - Revoke browser object URLs when replacing files and when preview components are destroyed.
 - Support Add Folder, Add Document, edit, delete, search, paging, and refresh in every folder view.
+- All application data grids must support sortable column headers. Use ascending, descending, and reset-to-default states with a visible sort-direction icon; sort filtered records before pagination and keep sorting keyboard accessible.
 - Use confirmation before deleting files and an explicit recursive warning before deleting folders with descendants.
 - Keep the reusable explorer behavior consistent between the root Documents page and nested folder pages.
 
