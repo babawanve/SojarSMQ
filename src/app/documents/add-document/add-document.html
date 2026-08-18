@@ -1,6 +1,6 @@
 <main class="add-document-page">
   <header class="workspace-toolbar">
-    <p class="preview-label">Preview</p>
+    <p class="preview-label">Document</p>
     <div class="toolbar-actions">
       <button class="outline-button" type="button" (click)="save()">Save</button>
       <button class="danger-button" type="button" *ngIf="isEditing" (click)="deleteDocument()">Delete</button>
@@ -14,7 +14,7 @@
     <section class="preview-panel" aria-label="Document preview">
       <div class="file-summary" *ngIf="selectedFile; else emptyFile">
         <div><strong>Uploaded File Name:</strong><span>{{ selectedFile.name }}</span><small>{{ fileSizeLabel }}</small></div>
-        <div class="file-actions"><label class="outline-button upload-button">Upload Different File<input type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.xls,.xlsx,application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" (change)="onFileSelected($event)"></label><button class="text-button" type="button" (click)="downloadFile()">Download</button></div>
+        <div class="file-actions"><label class="text-button upload-button">Upload Different File<input type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.xls,.xlsx,application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" (change)="onFileSelected($event)"></label><button class="text-button" type="button" (click)="downloadFile()">Download</button></div>
       </div>
       <ng-template #emptyFile>
         <div class="empty-upload"><i class="fa-solid fa-file-arrow-up"></i><strong>No file selected</strong><span>Select a PDF, image, Word, or Excel file to preview it here.</span><label class="outline-button upload-button">Upload File<input type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.doc,.docx,.xls,.xlsx,application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" (change)="onFileSelected($event)"></label></div>
